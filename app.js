@@ -62,7 +62,7 @@ passport.deserializeUser(function (id, done) {
 })
 
 // Routes
-app.get('/', (req, res) => res.render('index'))
+app.get('/', (req, res) => res.render('index', { user: req.user }))
 
 app.get('/sign-up', (req, res) => res.render('sign-up-form'))
 app.post('/sign-up', (req, res, next) => {
@@ -76,6 +76,14 @@ app.post('/sign-up', (req, res, next) => {
 		res.redirect('/')
 	})
 })
+
+app.post(
+	'/log-in',
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/',
+	})
+)
 
 const port = process.env.PORT || 3000
 
