@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const session = requireA('express-session')
+const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
@@ -33,4 +33,19 @@ app.use(express.urlencoded({ extended: false }))
 
 app.get('/', (req, res) => res.render('index'))
 
-app.listen(3000, () => console.log('app listening on port 3000'))
+app.get('/sign-up', (req, res) => res.render('sign-up-form'))
+app.post('/sign-up', (req, res, next) => {
+	const user = new User({
+		username: req.body.username,
+		password: req.body.password,
+	}).save((err) => {
+		if (err) {
+			return next(err)
+		}
+		res.redirect('/')
+	})
+})
+
+const port = process.env.PORT || 3000
+
+app.listen(port, () => console.log('app listening on port 3000'))
