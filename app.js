@@ -61,8 +61,13 @@ passport.deserializeUser(function (id, done) {
 	})
 })
 
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user
+	next()
+})
+
 // Routes
-app.get('/', (req, res) => res.render('index', { user: req.user }))
+app.get('/', (req, res) => res.render('index'))
 
 app.get('/sign-up', (req, res) => res.render('sign-up-form'))
 app.post('/sign-up', (req, res, next) => {
@@ -84,6 +89,15 @@ app.post(
 		failureRedirect: '/',
 	})
 )
+
+app.get('/log-out', (req, res) => {
+	req.logout((err) => {
+		if (err) {
+			return next(err)
+		}
+		res.redirect('/')
+	})
+})
 
 const port = process.env.PORT || 3000
 
